@@ -40,7 +40,7 @@ jobs:
       - name: Démarrer le reporter en arrière-plan
         env:
           GIST_ID: ${{ secrets.GIST_ID }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIST_TOKEN }}
         run: |
           # Démarrer le reporter en arrière-plan
           yarn tsx reporter-src/main.ts &
