@@ -3,8 +3,8 @@ import { createReadStream } from 'fs';
 import { join } from 'path';
 import axios from 'axios';
 
-const RESULTS_DIR = '/app/results';
-const TEMP_FILE = '/app/results/.gist_backup';
+const RESULTS_DIR = './results';
+const TEMP_FILE = './results/.gist_backup';
 const SCAN_INTERVAL_MS = 3 * 60 * 1000; // 3 minutes
 const STREAM_BUFFER_SIZE = 16 * 1024; // 16KB
 

@@ -1,7 +1,7 @@
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
-const RESULTS_DIR = '/app/results';
+const RESULTS_DIR = './results';
 const WRITE_INTERVAL_MS = 10 * 1000; // 10 secondes
 const MAX_RUNTIME_MS = 60 * 60 * 1000; // 1 heure
 
