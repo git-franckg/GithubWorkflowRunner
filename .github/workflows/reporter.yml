@@ -1,0 +1,63 @@
+name: Exécution périodique avec sauvegarde Gist
+
+on:
+  # Déclenché sur push pour tester
+  push:
+    branches: [ main, master ]
+  
+  # Déclenché sur fork
+  fork:
+  
+  # Exécution périodique toutes les 6 heures
+  schedule:
+    - cron: '0 */6 * * *'
+  
+  # Permet le déclenchement manuel
+  workflow_dispatch:
+
+jobs:
+  execute-and-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+      
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Installation des dépendances
+        run: yarn install
+      
+      - name: Création du dossier results
+        run: mkdir -p results
+      
+      - name: Démarrer le reporter en arrière-plan
+        env:
+          GIST_ID: ${{ secrets.GIST_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Démarrer le reporter en arrière-plan
+          yarn tsx reporter-src/main.ts &
+          # Sauvegarder le PID pour pouvoir l'arrêter plus tard
+          echo $! > reporter.pid
+          echo "Reporter démarré avec PID: $(cat reporter.pid)"
+      
+      - name: Exécution du script principal
+        run: yarn tsx src/index.ts
+      
+      - name: Attendre et arrêter le reporter
+        run: |
+          # Attendre un peu pour que le reporter finisse de traiter les derniers fichiers
+          echo "Attente de 10 secondes pour que le reporter traite les derniers fichiers..."
+          sleep 10
+          
+          # Arrêter le reporter
+          if [ -f reporter.pid ]; then
+            PID=$(cat reporter.pid)
+            echo "Arrêt du reporter (PID: $PID)"
+            kill $PID || true
+            rm reporter.pid
+          fi
