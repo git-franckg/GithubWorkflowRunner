@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: '20'
       
+      - name: Activer Corepack
+        run: corepack enable
+      
       - name: Installation des dépendances
         run: yarn install
       
